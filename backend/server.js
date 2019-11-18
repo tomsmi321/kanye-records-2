@@ -28,12 +28,11 @@ app.get('/test', (req, res) => {
 // returns an array of artists based on a string search query
 app.post('/', async (req, res) => {
     try {
-        let { searchTerm } = req.body;
-        const result = await axios.get(`https://api.musixmatch.com/ws/1.1/artist.search?format=jsonp&callback=callback&q_artist=${searchTerm}&apikey=${process.env.API_KEY}`);
-        const firstStep = result.data.split('callback(')[1];
-        const secondStep = firstStep.split(')')[0];
-        const final = JSON.parse(secondStep);
-        const artistList = final.message.body.artist_list;
+        console.log(req.params);
+        let { searchQuery } = req.body;
+        const artistResult = await axios.get(`https://api.musixmatch.com/ws/1.1/artist.search?format=jsonp&callback=callback&q_artist=${searchQuery}&apikey=${process.env.API_KEY}`);
+        const artistData = JSON.parse(artistResult.data.split('callback(')[1].split(')')[0]);
+        const artistList = artistData.message.body.artist_list;
         res.send(artistList);
     } catch(error) {
         res.status(500).send(error);
@@ -41,16 +40,24 @@ app.post('/', async (req, res) => {
 })
 
 
-// returns an array of an artists albums based on the artist id passed into route params
+
 app.get('/:id', async (req, res) => {
     try {
+        // get the artist id from route params
         const id = req.params.id;
-        const result = await axios.get(`https://api.musixmatch.com/ws/1.1/artist.albums.get?format=jsonp&callback=callback&artist_id=${id}&apikey=${process.env.API_KEY}`);
-        const firstStep = result.data.split('callback(')[1];
-        const secondStep = firstStep.split(')')[0];
-        const final = JSON.parse(secondStep);
-        const albumList = final.message.body.album_list
-        res.send(albumList);
+        // an array of an artists albums based on the artist id 
+        const albumResult = await axios.get(`https://api.musixmatch.com/ws/1.1/artist.albums.get?format=jsonp&callback=callback&artist_id=${id}&apikey=${process.env.API_KEY}`);
+        const albumData = JSON.parse(albumResult.data.split('callback(')[1].split(')')[0]);
+        const albumList = albumData.message.body.album_list
+        // artist details based on artist id
+        const artistResult = await axios.get(`https://api.musixmatch.com/ws/1.1/artist.get?format=jsonp&callback=callback&artist_id=${id}&apikey=${process.env.API_KEY}`)
+        const artistData = JSON.parse(artistResult.data.split('callback(')[1].split(')')[0]);
+        const artistInfo = artistData.message.body.artist
+        const artist = {
+            albums: albumList,
+            info: artistInfo
+        }
+        res.send(artist);
     } catch(error) {
         res.status(500).send(500);
     }
