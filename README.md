@@ -1,6 +1,6 @@
 # Kanye Records 2
 
-Kanye Records 2 is a React/Express application allows users to search for a music artist using the input search box. A list of matching artists will be returned (utilising the Musixmatch api endpoint). The user can then click on an artist among the returned results and see further details about them and their music catalogue.
+Kanye Records 2 is a React/Express application that allows users to search for a music artist using the input search box. A list of matching artists will be returned (utilising the Musixmatch api endpoint). The user can then click on an artist among the returned results and see further details about them and their music catalogue.
 
 <img width="1200" alt="Screen Shot 2019-11-18 at 12 19 51 pm" src="https://user-images.githubusercontent.com/48931725/69037744-8a21ae00-0a3c-11ea-8620-c44d20683f24.png">
 
